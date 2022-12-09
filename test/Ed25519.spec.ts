@@ -27,7 +27,7 @@ describe('Ed25519', () => {
        });
     }
 
-    it('t1: regular pub, regular msg, regular sig', async () => {
+    it('Test loop for 3 scenarios', async () => {
         for (let i = 0; i < 100; i++) { 
             const privateKey = ed.utils.randomPrivateKey();
             let privateKeyHex = Buffer.from(privateKey).toString('hex');
