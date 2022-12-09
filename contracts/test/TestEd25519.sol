@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "../libraries/Ed25519.sol";
 
 contract TestEd25519 {
-    bool verified;
+    bool public verified;
 
     function verify(
         bytes32 k,
