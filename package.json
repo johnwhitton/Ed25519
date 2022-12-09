@@ -13,6 +13,7 @@
         "typecheck": "yarn compile && yarn test && yarn tsc --noEmit"
     },
     "devDependencies": {
+        "@noble/ed25519": "^1.7.1",
         "@nomiclabs/hardhat-ethers": "^2.0.2",
         "@nomiclabs/hardhat-waffle": "^2.0.1",
         "@typechain/ethers-v5": "^5.0.0",

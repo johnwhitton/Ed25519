@@ -2,7 +2,8 @@ import { ethers } from "hardhat";
 import chai from "chai";
 
 import { TestEd25519 } from '../typechain';
-import { verify } from "crypto";
+import { verify, randomBytes } from "crypto";
+import * as ed from '@noble/ed25519';
 
 const { expect } = chai;
 
@@ -14,33 +15,24 @@ describe('Ed25519', () => {
         ed25519 = (await ed25519Factory.deploy()) as TestEd25519
     })
 
-    // for (const { description, pub, msg, sig, valid } of require('./ed25519-test1.json')) {
-    //     it(description, async () => {
-    //         const [r, s] = [sig.substring(0, 64), sig.substring(64)];
-    //         expect(valid).to.eq(await ed25519.verify(`0x${pub}`, `0x${r}`, `0x${s}`, `0x${msg}`))
-    //    });
-    // }
-
-    // for (const { description, pub, msg, sig, valid } of require('./ed25519-test2.json')) {
-    //     it(description, async () => {
-    //         const [r, s] = [sig.substring(0, 64), sig.substring(64)];
-    //         expect(valid).to.eq(await ed25519.verify(`0x${pub}`, `0x${r}`, `0x${s}`, `0x${msg}`))
-    //    });
-    // }
-
-    // for (const { description, pub, msg, sig, valid } of require('./ed25519-test3.json')) {
-    //     it(description, async () => {
-    //         const [r, s] = [sig.substring(0, 64), sig.substring(64)];
-    //         expect(valid).to.eq(await ed25519.verify(`0x${pub}`, `0x${r}`, `0x${s}`, `0x${msg}`))
-    //    });
-    // }
-
-    for (const { description, pub, msg, sig, valid } of require('./ed25519-tests.json')) {
-        it(description, async () => {
-            const [r, s] = [sig.substring(0, 64), sig.substring(64)];
-            const tx = await ed25519.verifySet(`0x${pub}`, `0x${r}`, `0x${s}`, `0x${msg}`)
+    it('t1: regular pub, regular msg, regular sig', async () => {
+        for (let i = 0; i < 1000; i++) { 
+            const privateKey = ed.utils.randomPrivateKey();
+            let privateKeyHex = Buffer.from(privateKey).toString('hex');
+            const message = randomBytes(32);
+            let messageHex = Buffer.from(message).toString('hex'); 
+            const publicKey = await ed.getPublicKey(privateKey);
+            let publicKeyHex = Buffer.from(publicKey).toString('hex'); 
+            const signature = await ed.sign(message, privateKey);
+            let signatureHex = Buffer.from(signature).toString('hex'); 
+            const isValid = await ed.verify(signature, message, publicKey);
+            // console.log(`publicKey: ${publicKey}`)
+            const [r, s] = [publicKeyHex.substring(0, 64), signatureHex.substring(64)];
+            const tx = await ed25519.verifySet(`0x${publicKeyHex}`, `0x${r}`, `0x${s}`, `0x${messageHex}`)
             const receipt = await tx.wait();
-            console.log(`cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()} ${description}`)
-       });
-    }
+            console.log(`${i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
+        }
+   }).timeout(2000000);
+    // t2: "regular pub, regular msg, invalid sig",
+    // t3: "regular pub, invalid msg, regular sig"
 })
