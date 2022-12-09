@@ -43,21 +43,19 @@ describe('Ed25519', () => {
             let tx = await ed25519.verifySet(`0x${publicKeyHex}`, `0x${r}`, `0x${s}`, `0x${messageHex}`)
             let receipt = await tx.wait();
             console.log( `t1 verified: ${await ed25519.verified()}`);
-            console.log(`$t1 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
+            console.log(`t1 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
             // t2: "regular pub, regular msg, invalid sig",
             const badSignature = 'b6161c95fd4e3237b7dd12cc3052aaa69382510ecb5b89c2fbeb8b6efb78266b81160af2842235a0257fc1d3e968c2c1c9f56f117da3186effcaeda256c38a0d'.substring(0, 64)
             tx = await ed25519.verifySet(`0x${publicKeyHex}`, `0x${badSignature}`, `0x${badSignature}`, `0x${messageHex}`)
             receipt = await tx.wait();
             console.log( `t2 verified: ${await ed25519.verified()}`);
-            console.log(`$t2 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
+            console.log(`t2 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
             // t3: "regular pub, invalid msg, regular sig"
             const badMessage = 'a0d8bdfd9f4d1023dae836b2e41da5019d20c60965dc40943e2c10f2ad4ee49ab0d8bdfd9f4d1023dae836b2e41da5019d20c60965dc'
             tx = await ed25519.verifySet(`0x${publicKeyHex}`, `0x${r}`, `0x${s}`, `0x${badMessage}`)
             receipt = await tx.wait();
             console.log( `t3 verified: ${await ed25519.verified()}`);
-            console.log(`$t3 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
+            console.log(`t3 {i} cumulativeGasUsed: ${receipt.cumulativeGasUsed.toString()}`)
         }
    }).timeout(2000000);
-    // t2: "regular pub, regular msg, invalid sig",
-    // t3: "regular pub, invalid msg, regular sig"
 })
