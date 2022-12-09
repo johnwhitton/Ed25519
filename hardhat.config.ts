@@ -1,6 +1,8 @@
+import * as dotenv from 'dotenv'
 import '@nomiclabs/hardhat-waffle'
 import '@typechain/hardhat'
 import { HardhatUserConfig } from 'hardhat/types'
+import "hardhat-gas-reporter"
 
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
@@ -11,6 +13,10 @@ const config: HardhatUserConfig = {
     hardhat: {
       allowUnlimitedContractSize: true,
     },
+  },
+  gasReporter: {
+    enabled: process.env.REPORT_GAS !== undefined,
+    currency: 'USD'
   },
 }
 
